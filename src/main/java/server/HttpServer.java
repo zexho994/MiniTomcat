@@ -1,5 +1,8 @@
 package server;
 
+import servlet.ServletProcessor;
+import servlet.StaticsResourceProcessor;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +13,7 @@ import java.net.Socket;
 
 public class HttpServer {
     public static final String WEB_ROOT = System.getProperty("user.dir") + File.separator + "webroot";
+    public static final String SERVLET_ROOT = System.getProperty("user.dir") + File.separator + "src/main/java/servlet";
 
     public static void main(String[] args) {
         HttpServer server = new HttpServer();

@@ -1,6 +1,9 @@
-package server;
+package servlet;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
+import server.HttpServer;
+import server.Request;
+import server.Response;
 
 import java.io.File;
 import java.io.FileInputStream;
