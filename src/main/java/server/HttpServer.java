@@ -12,7 +12,6 @@ public class HttpServer {
     public static final String WEB_ROOT = System.getProperty("user.dir") + File.separator + "webroot";
 
     public static void main(String[] args) {
-        System.out.println("start HttpServer");
         HttpServer server = new HttpServer();
         server.await();
     }
@@ -38,7 +37,15 @@ public class HttpServer {
                 request.parse();
                 Response response = new Response(outputStream);
                 response.setRequest(request);
-                response.sendStaticResource();
+
+                if(request.getUri().startsWith("/servlet/")){
+                    ServletProcessor servletProcessor = new ServletProcessor();
+                    servletProcessor.process(request, response);
+                }else{
+                    StaticsResourceProcessor staticsResourceProcessor = new StaticsResourceProcessor();
+                    staticsResourceProcessor.process(request, response);
+                }
+
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();

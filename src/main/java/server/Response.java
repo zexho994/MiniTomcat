@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class Response {
-    private OutputStream outputStream;
+    private OutputStream output;
     private Request request;
     public static final int BUFFER_SIZE = 1024;
 
-    public Response(OutputStream outputStream) {
-        this.outputStream = outputStream;
+    public Response(OutputStream output) {
+        this.output = output;
     }
 
     public void setRequest(Request request) {
@@ -20,6 +20,10 @@ public class Response {
 
     public Request getRequest() {
         return request;
+    }
+
+    public OutputStream getOutput() {
+        return output;
     }
 
     public void sendStaticResource() throws IOException {
@@ -32,17 +36,17 @@ public class Response {
                 fis = new FileInputStream(file);
                 int ch = fis.read(bytes, 0, BUFFER_SIZE);
                 while (ch != -1) {
-                    outputStream.write(bytes, 0, ch);
+                    output.write(bytes, 0, ch);
                     ch = fis.read(bytes, 0, BUFFER_SIZE);
                 }
-                outputStream.flush();
+                output.flush();
             } else {
                 String errorMessage = "HTTP/1.1 404 File Not Found\r\n" +
                         "Content-Type: text/html\r\n" +
                         "Content-Length: 23\r\n" +
                         "\r\n" +
                         "<h1>File Not Found</h1>";
-                outputStream.write(errorMessage.getBytes());
+                output.write(errorMessage.getBytes());
             }
         } catch (Exception e) {
             System.err.println(e);
