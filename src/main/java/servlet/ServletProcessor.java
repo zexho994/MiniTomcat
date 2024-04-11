@@ -5,10 +5,8 @@ import server.HttpServer;
 import server.Request;
 import server.Response;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import javax.servlet.Servlet;
+import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
@@ -27,7 +25,7 @@ public class ServletProcessor {
         String uri = request.getUri();
         String servletName = uri.substring(uri.lastIndexOf("/") + 1);
         URLClassLoader loader = null;
-        OutputStream output = null;
+        PrintWriter writer = null;
         try {
             // create a URLClassLoader
             URL[] urls = new URL[1];
@@ -39,6 +37,15 @@ public class ServletProcessor {
         } catch (IOException e) {
             System.out.println(e);
         }
+
+        // get PrintWriter
+        try {
+            response.setCharacterEncoding("UTF-8");
+            writer = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //由上面的URLClassLoader加载这个servlet
         Class<?> servletClass = null;
         try {
@@ -47,29 +54,15 @@ public class ServletProcessor {
             System.out.println(e);
         }
         //写响应头
-        output = response.getOutput();
         String head = composeResponseHead();
-        try {
-            output.write(head.getBytes("utf-8"));
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        writer.println(head);
         //创建servlet新实例，然后调用service()，由它来写动态内容到响应体 Servlet servlet = null;
         Servlet servlet = null;
         try {
             servlet = (Servlet) servletClass.newInstance();
             servlet.service(request, response);
-        } catch (Exception e) {
-            System.out.println(e.toString());
         } catch (Throwable e) {
             System.out.println(e.toString());
-        }
-        try {
-            output.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
