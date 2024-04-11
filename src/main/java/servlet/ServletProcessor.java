@@ -21,21 +21,22 @@ public class ServletProcessor {
             "Content-Type: ${ContentType}\r\n" + "Server: minit\r\n" +
             "Date: ${ZonedDateTime}\r\n" + "\r\n";
 
-    public void process(Request request, Response response) { //首先根据uri最后一个/号来定位，后面的字符串认为是servlet名字
+    public void process(Request request, Response response) {
         String uri = request.getUri();
+        //首先根据uri最后一个/号来定位，后面的字符串认为是servlet名字
         String servletName = uri.substring(uri.lastIndexOf("/") + 1);
         URLClassLoader loader = null;
         PrintWriter writer = null;
         try {
-            // create a URLClassLoader
             URL[] urls = new URL[1];
             URLStreamHandler streamHandler = null;
-            File classPath = new File(HttpServer.WEB_ROOT);
-            String repository = (new URL("file", null, classPath.getCanonicalPath() + File.separator)).toString();
+            File classPath = new File(HttpServer.SRC_ROOT);
+            String repository = new URL("file", null,
+                    classPath.getCanonicalPath() + File.separator).toString();
             urls[0] = new URL(null, repository, streamHandler);
             loader = new URLClassLoader(urls);
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         // get PrintWriter
@@ -51,7 +52,7 @@ public class ServletProcessor {
         try {
             servletClass = loader.loadClass(servletName);
         } catch (ClassNotFoundException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         //写响应头
         String head = composeResponseHead();
@@ -62,7 +63,7 @@ public class ServletProcessor {
             servlet = (Servlet) servletClass.newInstance();
             servlet.service(request, response);
         } catch (Throwable e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 

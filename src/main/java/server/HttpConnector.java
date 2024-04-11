@@ -16,12 +16,10 @@ public class HttpConnector implements Runnable {
             System.exit(1);
         }
         while (true) {
-            Socket socket = null;
             try {
-                socket = serverSocket.accept();
+                Socket socket = serverSocket.accept();
                 HttpProcessor processor = new HttpProcessor();
                 processor.process(socket);
-                // Close the socket
                 socket.close();
             } catch (Exception e) {
                 e.printStackTrace();

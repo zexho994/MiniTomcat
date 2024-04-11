@@ -25,9 +25,8 @@ public class StaticsResourceProcessor {
 
     //下面的字符串是正常情况下返回的，根据http协议，里面包含了相应的变量。
     private static String OKMessage = "HTTP/1.1 ${StatusCode} ${StatusName}\r\n" +
-            "Content-Type: ${ContentType}\r\n" + "Content-Length: ${ContentLength}\r\n" + "Server: minit\r\n" +
-            "Date: ${ZonedDateTime}\r\n" +
-            "\r\n";
+            "Content-Type: ${ContentType}\r\n" + "Content-Length: ${ContentLength}\r\n" +
+            "Server: mini tomcat Date: ${ZonedDateTime}\r\n";
 
     /**
      * 处理过程很简单，先将响应头写入输出流，然后从文件中读取内容写入输出流
