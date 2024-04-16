@@ -32,7 +32,7 @@ public class HttpConnector implements Runnable {
         }
         // 初始化处理器池
         for (int i = 0; i < minProcessors; i++) {
-            HttpProcessor processor = new HttpProcessor();
+            HttpProcessor processor = new HttpProcessor(this);
             processors.push(processor);
         }
         curProcessors = minProcessors;
@@ -55,8 +55,12 @@ public class HttpConnector implements Runnable {
                 // 对于处理过程中的异常，打印堆栈跟踪
             }
         }
+
     }
 
+    void recycle(HttpProcessor processor) {
+        processors.push(processor);
+    }
 
     private HttpProcessor createProcessor() {
         synchronized (processors) {
@@ -73,7 +77,7 @@ public class HttpConnector implements Runnable {
 
     //新建一个processor
     private HttpProcessor newProcessor() {
-        HttpProcessor initprocessor = new HttpProcessor();
+        HttpProcessor initprocessor = new HttpProcessor(this);
         processors.push(initprocessor);
         curProcessors++;
         return processors.pop();
